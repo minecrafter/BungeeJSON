@@ -1,0 +1,5 @@
+# BungeeJSON configuration file.
+# There is not a lot to configure.
+
+# Port where the HTTP server will run.
+http-server-port: 7432
