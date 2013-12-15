@@ -27,7 +27,10 @@ public class BungeeJSONRequestManager implements RequestManager {
 
     @Override
     public void registerEndpoint(String endpoint, RequestHandler handler) {
-        endpoints.put(endpoint, handler);
+        String realEndpoint = endpoint;
+        if (!realEndpoint.startsWith("/"))
+            realEndpoint = "/" + endpoint;
+        endpoints.put(realEndpoint, handler);
     }
 
     @Override
