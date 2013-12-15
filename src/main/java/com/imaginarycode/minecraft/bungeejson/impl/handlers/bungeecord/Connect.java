@@ -25,7 +25,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class Connect implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         // Verify if we have our 2 parameters:
         if (request.getParams().containsKey("player") && request.getParams().containsKey("server")) {
             String pPlayer = request.getParams().get("player").get(0);

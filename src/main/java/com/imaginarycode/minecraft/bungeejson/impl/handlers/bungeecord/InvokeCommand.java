@@ -15,7 +15,7 @@ import java.util.*;
 
 public class InvokeCommand implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         if (request.getParams().containsKey("command")) {
             BungeeJSONInvokeCommandSender commandSender = new BungeeJSONInvokeCommandSender(request.getRemoteIp());
             ProxyServer.getInstance().getPluginManager().dispatchCommand(commandSender, request.getParams().get("command").get(0));

@@ -23,7 +23,7 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class SendMessage implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         if (request.getParams().containsKey("player") && request.getParams().containsKey("message")) {
             String pPlayer = request.getParams().get("player").get(0);
             String message = request.getParams().get("message").get(0);

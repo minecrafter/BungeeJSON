@@ -27,7 +27,7 @@ import java.util.List;
 
 public class PlayersOnline implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         List<String> players = new ArrayList<>();
         for (ProxiedPlayer pp : ProxyServer.getInstance().getPlayers()) {
             players.add(pp.getName());

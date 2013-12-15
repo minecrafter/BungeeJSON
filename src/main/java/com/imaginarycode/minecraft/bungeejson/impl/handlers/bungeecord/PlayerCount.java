@@ -23,7 +23,7 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class PlayerCount implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         return ImmutableMap.of("total_players", ProxyServer.getInstance().getOnlineCount(), "max_players",
                 ProxyServer.getInstance().getConfig().getPlayerLimit());
     }

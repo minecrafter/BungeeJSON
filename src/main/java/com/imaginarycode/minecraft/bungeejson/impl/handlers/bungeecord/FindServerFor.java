@@ -25,7 +25,7 @@ import java.util.Collections;
 
 public class FindServerFor implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         if (request.getParams().containsKey("player")) {
             String pPlayer = request.getParams().get("player").get(0);
             if (ProxyServer.getInstance().getPlayer(pPlayer) != null) {

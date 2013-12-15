@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ServerList implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         List<Server> servers = new ArrayList<>();
         for (ServerInfo si : ProxyServer.getInstance().getServers().values()) {
             Server server = new Server();

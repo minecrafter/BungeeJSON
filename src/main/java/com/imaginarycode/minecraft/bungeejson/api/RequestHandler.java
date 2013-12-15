@@ -16,7 +16,9 @@
  */
 package com.imaginarycode.minecraft.bungeejson.api;
 
+import com.imaginarycode.minecraft.bungeejson.api.exceptions.NotAuthorizedException;
+
 public interface RequestHandler {
-    Object handle(ApiRequest request) throws Throwable;
+    Object handle(ApiRequest request) throws NotAuthorizedException;
     boolean requiresAuthentication();
 }

@@ -23,7 +23,7 @@ import net.md_5.bungee.api.ProxyServer;
 
 public class KickPlayer implements RequestHandler {
     @Override
-    public Object handle(ApiRequest request) throws Throwable {
+    public Object handle(ApiRequest request) {
         if (request.getParams().containsKey("player")) {
             String pPlayer = request.getParams().get("player").get(0);
             String reason;
