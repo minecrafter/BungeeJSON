@@ -37,7 +37,7 @@ public class KickPlayer implements RequestHandler {
                 return BungeeJSONUtilities.error("Player is not online.");
             }
         } else {
-            return BungeeJSONUtilities.error("No player argument specified.");
+            return BungeeJSONUtilities.error("No player specified.");
         }
     }
 
