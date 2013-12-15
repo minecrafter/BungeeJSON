@@ -16,7 +16,6 @@
  */
 package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 
-import com.google.common.collect.ImmutableMap;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
