@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.httpserver;
+package com.imaginarycode.minecraft.bungeejson.impl.httpserver;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

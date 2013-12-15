@@ -19,7 +19,7 @@ package com.imaginarycode.minecraft.bungeejson;
 import com.google.gson.Gson;
 import com.imaginarycode.minecraft.bungeejson.api.AuthenticationProvider;
 import com.imaginarycode.minecraft.bungeejson.api.RequestManager;
-import com.imaginarycode.minecraft.bungeejson.httpserver.NettyBootstrap;
+import com.imaginarycode.minecraft.bungeejson.impl.httpserver.NettyBootstrap;
 import com.imaginarycode.minecraft.bungeejson.impl.BungeeJSONRequestManager;
 import com.imaginarycode.minecraft.bungeejson.impl.auth.SimpleKeyAuthentication;
 import com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord.*;
