@@ -49,6 +49,7 @@ public class BungeeJSONPlugin extends ConfigurablePlugin {
         getLogger().info("Pre-registering handlers...");
         requestManager.registerEndpoint("/bungeecord/connect", new Connect());
         requestManager.registerEndpoint("/bungeecord/find_server_for", new FindServerFor());
+        requestManager.registerEndpoint("/bungeecord/invoke_command", new InvokeCommand());
         requestManager.registerEndpoint("/bungeecord/kick_player", new KickPlayer());
         requestManager.registerEndpoint("/bungeecord/player_count", new PlayerCount());
         requestManager.registerEndpoint("/bungeecord/players_online", new PlayersOnline());
