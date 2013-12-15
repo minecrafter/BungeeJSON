@@ -40,6 +40,6 @@ public class FindServerFor implements RequestHandler {
 
     @Override
     public boolean requiresAuthentication() {
-        return true;
+        return false;
     }
 }
