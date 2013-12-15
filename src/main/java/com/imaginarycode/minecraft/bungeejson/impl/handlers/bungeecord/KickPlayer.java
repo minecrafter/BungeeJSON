@@ -26,10 +26,11 @@ public class KickPlayer implements RequestHandler {
     public Object handle(ApiRequest request) throws Throwable {
         if (request.getParams().containsKey("player")) {
             String pPlayer = request.getParams().get("player").get(0);
-            String reason = request.getParams().get("reason").get(0);
-            if (reason == null) {
+            String reason;
+            if (request.getParams().containsKey("reason"))
+                reason = request.getParams().get("reason").get(0);
+            else
                 reason = "You have been kicked externally.";
-            }
             if (ProxyServer.getInstance().getPlayer(pPlayer) != null) {
                 ProxyServer.getInstance().getPlayer(pPlayer).disconnect(BungeeJSONUtilities.singletonChatComponent(reason));
                 return BungeeJSONUtilities.ok();
