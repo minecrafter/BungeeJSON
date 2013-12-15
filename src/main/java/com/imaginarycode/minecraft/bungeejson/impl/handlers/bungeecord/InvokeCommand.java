@@ -5,6 +5,7 @@ import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -44,12 +45,13 @@ public class InvokeCommand implements RequestHandler {
 
         @Override
         public void sendMessage(String s) {
-            output.add(s);
+            output.add(ChatColor.stripColor(s));
         }
 
         @Override
         public void sendMessages(String... strings) {
-            output.addAll(Arrays.asList(strings));
+            for (String string : strings)
+                sendMessage(string);
         }
 
         @Override
