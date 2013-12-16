@@ -24,7 +24,7 @@ import com.imaginarycode.minecraft.bungeejson.api.AuthenticationProvider;
 import java.util.Collections;
 import java.util.Random;
 
-public class SimpleKeyAuthentication implements AuthenticationProvider {
+public class ApiKeyAuthenticationProvider implements AuthenticationProvider {
     @Override
     public void onEnable() {
         if (!BungeeJSONPlugin.getPlugin().getConfig().contains("api-keys") ||

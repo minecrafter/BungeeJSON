@@ -19,9 +19,11 @@ package com.imaginarycode.minecraft.bungeejson;
 import com.google.gson.Gson;
 import com.imaginarycode.minecraft.bungeejson.api.AuthenticationProvider;
 import com.imaginarycode.minecraft.bungeejson.api.RequestManager;
+import com.imaginarycode.minecraft.bungeejson.impl.auth.ApiKeyAuthenticationProvider;
+import com.imaginarycode.minecraft.bungeejson.impl.auth.DummyAuthenticationProvider;
+import com.imaginarycode.minecraft.bungeejson.impl.auth.IpBasedAuthenticationProvider;
 import com.imaginarycode.minecraft.bungeejson.impl.httpserver.NettyBootstrap;
 import com.imaginarycode.minecraft.bungeejson.impl.BungeeJSONRequestManager;
-import com.imaginarycode.minecraft.bungeejson.impl.auth.SimpleKeyAuthentication;
 import com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord.*;
 import com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeejson.IsAuthenticated;
 import com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeejson.Version;
@@ -34,7 +36,7 @@ public class BungeeJSONPlugin extends ConfigurablePlugin {
     @Getter
     private static RequestManager requestManager = new BungeeJSONRequestManager();
     @Getter
-    private AuthenticationProvider authenticationProvider = new SimpleKeyAuthentication();
+    private AuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider();
     @Getter
     private Gson gson = new Gson();
 
@@ -61,6 +63,26 @@ public class BungeeJSONPlugin extends ConfigurablePlugin {
 
     @Override
     public void onEnable() {
+        if (getConfig().contains("auth-type") && getConfig().isString("auth-type")) {
+            switch (getConfig().getString("auth-type")) {
+                case "none":
+                case "dummy":
+                    authenticationProvider = new DummyAuthenticationProvider();
+                    break;
+                case "ipbased":
+                case "ip":
+                case "ip-based":
+                    authenticationProvider = new IpBasedAuthenticationProvider();
+                    break;
+                case "key":
+                case "apikey":
+                case "api-key":
+                    break;
+                default:
+                    getLogger().info(getConfig().getString("auth-type") + " authentication is not known to this plugin, using apikey auth.");
+                    break;
+            }
+        }
         authenticationProvider.onEnable();
         nb.start();
     }
