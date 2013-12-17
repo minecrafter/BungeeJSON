@@ -63,25 +63,23 @@ public class BungeeJSONPlugin extends ConfigurablePlugin {
 
     @Override
     public void onEnable() {
-        if (getConfig().contains("auth-type") && getConfig().isString("auth-type")) {
-            switch (getConfig().getString("auth-type")) {
-                case "none":
-                case "dummy":
-                    authenticationProvider = new DummyAuthenticationProvider();
-                    break;
-                case "ipbased":
-                case "ip":
-                case "ip-based":
-                    authenticationProvider = new IpBasedAuthenticationProvider();
-                    break;
-                case "key":
-                case "apikey":
-                case "api-key":
-                    break;
-                default:
-                    getLogger().info(getConfig().getString("auth-type") + " authentication is not known to this plugin, using apikey auth.");
-                    break;
-            }
+        switch (getConfig().getString("auth-type", "api-key")) {
+            case "none":
+            case "dummy":
+                authenticationProvider = new DummyAuthenticationProvider();
+                break;
+            case "ipbased":
+            case "ip":
+            case "ip-based":
+                authenticationProvider = new IpBasedAuthenticationProvider();
+                break;
+            case "key":
+            case "apikey":
+            case "api-key":
+                break;
+            default:
+                getLogger().info(getConfig().getString("auth-type") + " authentication is not known to this plugin, using api-key auth.");
+                break;
         }
         authenticationProvider.onEnable();
         nb.start();

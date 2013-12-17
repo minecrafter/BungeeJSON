@@ -3,3 +3,8 @@
 
 # Port where the HTTP server will run.
 http-server-port: 7432
+
+# Authentication provider.
+# Available: api-key, ip-based, dummy
+# See http://minecraft.imaginarycode.com/bungeejson:auth for information.
+auth-type: api-key
