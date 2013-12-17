@@ -30,7 +30,7 @@ public class InvokeCommand implements RequestHandler {
         return true;
     }
 
-    private class BungeeJSONInvokeCommandSender implements CommandSender {
+    public static class BungeeJSONInvokeCommandSender implements CommandSender {
         @Getter List<String> output = new ArrayList<>();
         InetAddress ia;
 
@@ -40,7 +40,7 @@ public class InvokeCommand implements RequestHandler {
 
         @Override
         public String getName() {
-            return ia.toString();
+            return "BungeeJSON";
         }
 
         @Override
@@ -86,6 +86,10 @@ public class InvokeCommand implements RequestHandler {
 
         @Override
         public void setPermission(String s, boolean b) {
+        }
+
+        public InetAddress getRequestingIp() {
+            return ia;
         }
     }
 }
