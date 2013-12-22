@@ -37,12 +37,11 @@ public class NettyBootstrap extends Thread {
 
     @Override
     public void run() {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(2, factory);
-        EventLoopGroup workerGroup = new NioEventLoopGroup(2, factory);
+        EventLoopGroup group = new NioEventLoopGroup(5, factory);
         int port = BungeeJSONPlugin.getPlugin().getConfig().getInt("http-server-port", 7432);
         try {
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
+            b.group(group)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -59,8 +58,7 @@ public class NettyBootstrap extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+            group.shutdownGracefully();
         }
     }
 }
