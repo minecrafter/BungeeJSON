@@ -19,6 +19,7 @@ package com.imaginarycode.minecraft.bungeejson.impl.httpserver;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -46,6 +47,7 @@ public class NettyBootstrap extends Thread {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
+                            ch.config().setAllocator(PooledByteBufAllocator.DEFAULT);
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast("messageCodec", new HttpServerCodec());
                             pipeline.addLast("messageHandler", new HttpServerHandler());

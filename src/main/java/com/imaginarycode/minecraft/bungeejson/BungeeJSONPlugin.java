@@ -16,6 +16,7 @@
  */
 package com.imaginarycode.minecraft.bungeejson;
 
+import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.imaginarycode.minecraft.bungeejson.api.AuthenticationProvider;
 import com.imaginarycode.minecraft.bungeejson.api.RequestManager;
@@ -28,9 +29,14 @@ import com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord.*;
 import com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeejson.IsAuthenticated;
 import com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeejson.Version;
 import lombok.Getter;
-import net.craftminecraft.bungee.bungeeyaml.pluginapi.ConfigurablePlugin;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
-public class BungeeJSONPlugin extends ConfigurablePlugin {
+import java.io.*;
+
+public class BungeeJSONPlugin extends Plugin {
     private NettyBootstrap nb = new NettyBootstrap();
     protected static BungeeJSONPlugin plugin;
     @Getter
@@ -39,16 +45,36 @@ public class BungeeJSONPlugin extends ConfigurablePlugin {
     private AuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider();
     @Getter
     private Gson gson = new Gson();
+    @Getter
+    private Configuration config = null;
 
     public static BungeeJSONPlugin getPlugin() {
         return plugin;
     }
 
     @Override
-    public void onLoading() {
-        saveDefaultConfig();
+    public void onLoad() {
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdir();
+        }
+        File configFile = new File(getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            try {
+                configFile.createNewFile();
+                try (InputStream is = getResourceAsStream("config.yml");
+                     OutputStream os = new FileOutputStream(configFile)) {
+                    ByteStreams.copy(is, os);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to create configuration file", e);
+            }
+        }
+        try {
+            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load configuration file", e);
+        }
         plugin = this;
-        getLogger().info("Pre-registering handlers...");
         requestManager.registerEndpoint("/bungeecord/connect", new Connect());
         requestManager.registerEndpoint("/bungeecord/find_server_for", new FindServerFor());
         requestManager.registerEndpoint("/bungeecord/invoke_command", new InvokeCommand());
@@ -83,5 +109,13 @@ public class BungeeJSONPlugin extends ConfigurablePlugin {
         }
         authenticationProvider.onEnable();
         nb.start();
+    }
+
+    public void saveConfig() {
+        try {
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, new File(getDataFolder(), "config.yml"));
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to save configuration file", e);
+        }
     }
 }

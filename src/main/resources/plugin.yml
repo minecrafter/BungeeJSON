@@ -2,4 +2,3 @@ name: BungeeJSON
 main: com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin
 version: 0.1
 author: tuxed
-depends: [BungeeYAML]

@@ -20,15 +20,18 @@ import com.google.common.hash.Hashing;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.AuthenticationProvider;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class ApiKeyAuthenticationProvider implements AuthenticationProvider {
     @Override
     public void onEnable() {
-        if (!BungeeJSONPlugin.getPlugin().getConfig().contains("api-keys") ||
-                !BungeeJSONPlugin.getPlugin().getConfig().isList("api-keys")) {
+        if (BungeeJSONPlugin.getPlugin().getConfig().get("api-keys") == null ||
+                !(BungeeJSONPlugin.getPlugin().getConfig().get("api-keys") instanceof List)) {
             BungeeJSONPlugin.getPlugin().getLogger().info("You don't seem to have any API keys, so I'm adding one for your convenience.");
             byte[] bytes = new byte[16];
             new Random().nextBytes(bytes);
