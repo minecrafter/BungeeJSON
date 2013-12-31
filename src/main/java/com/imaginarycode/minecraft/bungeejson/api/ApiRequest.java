@@ -20,7 +20,21 @@ import com.google.common.collect.ListMultimap;
 
 import java.net.InetAddress;
 
+/**
+ * This interface represents an API request, regardless of request medium.
+ */
 public interface ApiRequest {
+    /**
+     * Get the remote IP associated with this request. This can be null depending on request medium.
+     * @return the remote IP address
+     */
     public InetAddress getRemoteIp();
+
+    /**
+     * Returns a <b>immutable</b> {@link com.google.common.collect.ListMultimap}, with all the parameters passed to this request.
+     * <p/>
+     * Most of time, you want to check for the existence of the key in the multimap, and then use <code>.get(key).get(0)</code>, as usually one parameter is passed.
+     * @return a {@link com.google.common.collect.ListMultimap}
+     */
     public ListMultimap<String, String> getParams();
 }

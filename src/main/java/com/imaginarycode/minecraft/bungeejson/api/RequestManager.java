@@ -17,6 +17,12 @@
 package com.imaginarycode.minecraft.bungeejson.api;
 
 public interface RequestManager {
+    /**
+     * Register the specified endpoint with this request handler.
+     *
+     * @param endpoint the endpoint URL, relative to the BungeeJSON server root
+     * @param handler the endpoint {@link com.imaginarycode.minecraft.bungeejson.api.RequestHandler}
+     */
     void registerEndpoint(String endpoint, RequestHandler handler);
     RequestHandler getHandlerForEndpoint(String uri);
 }

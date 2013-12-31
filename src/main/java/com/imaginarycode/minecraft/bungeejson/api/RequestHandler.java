@@ -18,7 +18,21 @@ package com.imaginarycode.minecraft.bungeejson.api;
 
 import com.imaginarycode.minecraft.bungeejson.api.exceptions.NotAuthorizedException;
 
+/**
+ * This interface specifies a request handler.
+ */
 public interface RequestHandler {
+    /**
+     * Handle the request.
+     * @param request an {@link com.imaginarycode.minecraft.bungeejson.api.ApiRequest}
+     * @return an Object that can be serialized by Gson
+     * @throws NotAuthorizedException - if the access is not allowed
+     */
     Object handle(ApiRequest request) throws NotAuthorizedException;
+
+    /**
+     * Return true or false if this request requires authentication.
+     * @return whether or not this handler requires authentication
+     */
     boolean requiresAuthentication();
 }

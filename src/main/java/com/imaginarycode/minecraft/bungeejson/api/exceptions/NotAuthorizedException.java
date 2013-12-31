@@ -16,6 +16,9 @@
  */
 package com.imaginarycode.minecraft.bungeejson.api.exceptions;
 
+/**
+ * This exception may be thrown when the request handler would like to deny access to an request that is not covered by BungeeJSON's pre-request authentication.
+ */
 public class NotAuthorizedException extends Exception {
     public NotAuthorizedException() { super(); }
     public NotAuthorizedException(String message) { super(message); }

@@ -39,7 +39,7 @@ import java.io.*;
 public class BungeeJSONPlugin extends Plugin {
     private NettyBootstrap nb = new NettyBootstrap();
     protected static BungeeJSONPlugin plugin;
-    @Getter
+
     private static RequestManager requestManager = new BungeeJSONRequestManager();
     @Getter
     private AuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider();
@@ -50,6 +50,14 @@ public class BungeeJSONPlugin extends Plugin {
 
     public static BungeeJSONPlugin getPlugin() {
         return plugin;
+    }
+
+    /**
+     * Fetch the {@link com.imaginarycode.minecraft.bungeejson.api.RequestManager}.
+     * @return the {@link com.imaginarycode.minecraft.bungeejson.api.RequestManager}
+     */
+    public static RequestManager getRequestManager() {
+        return requestManager;
     }
 
     @Override
