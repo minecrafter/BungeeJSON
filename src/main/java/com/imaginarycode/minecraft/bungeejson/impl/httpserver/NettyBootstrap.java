@@ -29,7 +29,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import java.util.concurrent.ThreadFactory;
 
 public class NettyBootstrap extends Thread {
-    private final ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("BungeeJSON Netty/HTTP Server - #%d")
+    private final ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("BungeeJSON Netty Thread #%d")
             .setDaemon(true).build();
 
     public NettyBootstrap() {

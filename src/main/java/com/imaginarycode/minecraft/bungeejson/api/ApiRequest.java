@@ -37,4 +37,11 @@ public interface ApiRequest {
      * @return a {@link com.google.common.collect.ListMultimap}
      */
     public ListMultimap<String, String> getParams();
+
+    /**
+     * Get the data submitted with with this request.
+     *
+     * @return the data submitted with this request
+     */
+    public String getData();
 }

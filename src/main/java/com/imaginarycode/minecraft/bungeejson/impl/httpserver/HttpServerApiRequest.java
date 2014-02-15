@@ -24,21 +24,28 @@ import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import java.net.InetAddress;
 
 public final class HttpServerApiRequest implements ApiRequest {
-    private final InetAddress ia;
+    private final InetAddress remoteIp;
     private final ListMultimap<String, String> params;
+    private final String data;
 
-    public HttpServerApiRequest(InetAddress ia, Multimap<String, String> params) {
-        this.ia = ia;
+    public HttpServerApiRequest(InetAddress ia, Multimap<String, String> params, String body) {
+        this.remoteIp = ia;
+        this.data = body;
         this.params = ImmutableListMultimap.copyOf(params);
     }
 
     @Override
-    public final InetAddress getRemoteIp() {
-        return ia;
+    public InetAddress getRemoteIp() {
+        return remoteIp;
     }
 
     @Override
-    public final ListMultimap<String, String> getParams() {
+    public ListMultimap<String, String> getParams() {
         return params;
+    }
+
+    @Override
+    public String getData() {
+        return data;
     }
 }

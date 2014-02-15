@@ -88,6 +88,11 @@ public class InvokeCommand implements RequestHandler {
         public void setPermission(String s, boolean b) {
         }
 
+        @Override
+        public Collection<String> getPermissions() {
+            return Collections.emptySet();
+        }
+
         public InetAddress getRequestingIp() {
             return ia;
         }

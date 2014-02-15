@@ -16,13 +16,14 @@
  */
 package com.imaginarycode.minecraft.bungeejson.impl.httpserver;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
-import com.imaginarycode.minecraft.bungeejson.api.exceptions.NotAuthorizedException;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -32,20 +33,34 @@ import io.netty.util.CharsetUtil;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     private HttpResponse resp;
+    private HttpRequest request;
+    private StringBuilder bodyBuilder = new StringBuilder();
+    private static final ExecutorService apiRequestExecutor = Executors.newCachedThreadPool(
+            new ThreadFactoryBuilder()
+                    .setNameFormat("BungeeJSON API Request Executor #%d")
+                    .setDaemon(true)
+                    .build()
+    );
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
         if (channelHandlerContext.channel().remoteAddress() instanceof InetSocketAddress) {
             if (o instanceof HttpRequest) {
-                HttpRequest request = (HttpRequest) o;
-                resp = getResponse(channelHandlerContext, request);
+                request = (HttpRequest) o;
             }
-            if (o instanceof LastHttpContent) {
-                channelHandlerContext.channel().writeAndFlush(resp);
+            if (o instanceof HttpContent) {
+                bodyBuilder.append(((HttpContent) o).content().toString(Charsets.UTF_8));
+                if (o instanceof LastHttpContent) {
+                    channelHandlerContext.channel().writeAndFlush(getResponse(channelHandlerContext, request));
+                    bodyBuilder = new StringBuilder();
+                }
             }
         }
     }
@@ -53,27 +68,29 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     private HttpResponse getResponse(ChannelHandlerContext channelHandlerContext, HttpRequest hr) {
         QueryStringDecoder query = new QueryStringDecoder(hr.getUri());
         Multimap<String, String> params = createMultimapFromMap(query.parameters());
-        ApiRequest ar = new HttpServerApiRequest(((InetSocketAddress) channelHandlerContext.channel().remoteAddress()).getAddress(),
-                params);
 
         Object reply;
         HttpResponseStatus hrs;
-        RequestHandler handler = BungeeJSONPlugin.getRequestManager().getHandlerForEndpoint(query.path());
+        final RequestHandler handler = BungeeJSONPlugin.getRequestManager().getHandlerForEndpoint(query.path());
         if (handler == null) {
             reply = BungeeJSONUtilities.error("No such endpoint exists.");
             hrs = HttpResponseStatus.NOT_FOUND;
         } else {
+            final ApiRequest ar = new HttpServerApiRequest(((InetSocketAddress) channelHandlerContext.channel().remoteAddress()).getAddress(),
+                    params, bodyBuilder.toString());
             try {
                 if (handler.requiresAuthentication() && !BungeeJSONPlugin.getPlugin().getAuthenticationProvider().authenticate(ar, query.path())) {
                     hrs = HttpResponseStatus.FORBIDDEN;
                     reply = BungeeJSONUtilities.error("Access denied.");
                 } else {
-                    reply = handler.handle(ar);
+                    reply = apiRequestExecutor.submit(new Callable<Object>() {
+                        @Override
+                        public Object call() throws Exception {
+                            return handler.handle(ar);
+                        }
+                    }).get();
                     hrs = HttpResponseStatus.OK;
                 }
-            } catch (NotAuthorizedException e) {
-                hrs = HttpResponseStatus.FORBIDDEN;
-                reply = BungeeJSONUtilities.error("Access denied: " + e.getMessage());
             } catch (Throwable throwable) {
                 hrs = HttpResponseStatus.INTERNAL_SERVER_ERROR;
                 reply = BungeeJSONUtilities.error("An internal error has occurred. Information has been logged to the console.");
