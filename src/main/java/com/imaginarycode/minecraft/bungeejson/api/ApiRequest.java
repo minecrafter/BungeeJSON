@@ -32,7 +32,7 @@ public interface ApiRequest {
 
     /**
      * Returns a <b>immutable</b> {@link com.google.common.collect.ListMultimap}, with all the parameters passed to this request.
-     * <p/>
+     * <p>
      * Most of time, you want to check for the existence of the key in the multimap, and then use <code>.get(key).get(0)</code>, as usually one parameter is passed.
      * @return a {@link com.google.common.collect.ListMultimap}
      */
