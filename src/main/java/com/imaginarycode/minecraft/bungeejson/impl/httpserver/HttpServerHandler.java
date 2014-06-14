@@ -102,6 +102,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
         DefaultFullHttpResponse hreply = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, hrs, Unpooled.copiedBuffer(json, CharsetUtil.UTF_8));
         // Add a reminder that we're still running the show.
         hreply.headers().set("Content-Type", "application/json; charset=UTF-8");
+        hreply.headers().set("Access-Control-Allow-Origin", "*");
         hreply.headers().set("Server", "BungeeJSON/0.1");
         hreply.headers().set("Content-Length", json.length());
         return hreply;
