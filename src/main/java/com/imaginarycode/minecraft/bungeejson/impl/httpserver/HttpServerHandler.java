@@ -19,7 +19,6 @@ package com.imaginarycode.minecraft.bungeejson.impl.httpserver;
 import com.google.common.base.Charsets;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
@@ -33,21 +32,12 @@ import io.netty.util.CharsetUtil;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     private HttpResponse resp;
     private HttpRequest request;
     private StringBuilder bodyBuilder = new StringBuilder();
-    private static final ExecutorService apiRequestExecutor = Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder()
-                    .setNameFormat("BungeeJSON API Request Executor #%d")
-                    .setDaemon(true)
-                    .build()
-    );
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
@@ -59,7 +49,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
                 bodyBuilder.append(((HttpContent) o).content().toString(Charsets.UTF_8));
                 if (o instanceof LastHttpContent) {
                     channelHandlerContext.channel().writeAndFlush(getResponse(channelHandlerContext, request));
-                    bodyBuilder = new StringBuilder();
+                    bodyBuilder.delete(0, bodyBuilder.length());
                 }
             }
         }
@@ -83,12 +73,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
                     hrs = HttpResponseStatus.FORBIDDEN;
                     reply = BungeeJSONUtilities.error("Access denied.");
                 } else {
-                    reply = apiRequestExecutor.submit(new Callable<Object>() {
-                        @Override
-                        public Object call() throws Exception {
-                            return handler.handle(ar);
-                        }
-                    }).get();
+                    reply = handler.handle(ar);
                     hrs = HttpResponseStatus.OK;
                 }
             } catch (Throwable throwable) {
@@ -99,7 +84,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
         }
 
         String json = BungeeJSONPlugin.getPlugin().getGson().toJson(reply);
-        DefaultFullHttpResponse hreply = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, hrs, Unpooled.copiedBuffer(json, CharsetUtil.UTF_8));
+        DefaultFullHttpResponse hreply = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, hrs, Unpooled.wrappedBuffer(json.getBytes(CharsetUtil.UTF_8)));
         // Add a reminder that we're still running the show.
         hreply.headers().set("Content-Type", "application/json; charset=UTF-8");
         hreply.headers().set("Access-Control-Allow-Origin", "*");
@@ -111,7 +96,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     private <K, V> Multimap<K, V> createMultimapFromMap(Map<K, List<V>> map) {
         Multimap<K, V> multimap = HashMultimap.create();
         for (Map.Entry<K, List<V>> entry : map.entrySet()) {
-            multimap.get(entry.getKey()).addAll(entry.getValue());
+            multimap.putAll(entry.getKey(), entry.getValue());
         }
         return multimap;
     }

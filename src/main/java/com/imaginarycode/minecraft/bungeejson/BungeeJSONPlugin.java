@@ -116,7 +116,13 @@ public class BungeeJSONPlugin extends Plugin {
                 break;
         }
         authenticationProvider.onEnable();
-        nb.start();
+        nb.initialize();
+    }
+
+    @Override
+    public void onDisable() {
+        nb.getChannelFuture().channel().close().syncUninterruptibly();
+        nb.getGroup().shutdownGracefully();
     }
 
     public void saveConfig() {

@@ -25,42 +25,42 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.util.concurrent.GenericProgressiveFutureListener;
+import io.netty.util.concurrent.ProgressiveFuture;
+import lombok.Getter;
 
 import java.util.concurrent.ThreadFactory;
 
-public class NettyBootstrap extends Thread {
+public class NettyBootstrap {
     private final ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("BungeeJSON Netty Thread #%d")
             .setDaemon(true).build();
+    @Getter
+    private ChannelFuture channelFuture;
+    @Getter
+    private EventLoopGroup group;
 
-    public NettyBootstrap() {
-        super("BungeeJSON Netty Bootstrap");
-    }
-
-    @Override
-    public void run() {
-        EventLoopGroup group = new NioEventLoopGroup(5, factory);
+    public void initialize() {
+        group = new NioEventLoopGroup(5, factory);
         int port = BungeeJSONPlugin.getPlugin().getConfig().getInt("http-server-port", 7432);
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(group)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel ch) throws Exception {
-                            ch.config().setAllocator(PooledByteBufAllocator.DEFAULT);
-                            ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast("messageCodec", new HttpServerCodec());
-                            pipeline.addLast("messageHandler", new HttpServerHandler());
-                        }
-                    })
-                    .option(ChannelOption.SO_BACKLOG, 128)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
-            ChannelFuture f = b.bind(port).sync();
-            f.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            group.shutdownGracefully();
-        }
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(group)
+                .channel(NioServerSocketChannel.class)
+                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel ch) throws Exception {
+                        ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast("messageCodec", new HttpServerCodec());
+                        pipeline.addLast("messageHandler", new HttpServerHandler());
+                    }
+                })
+                .option(ChannelOption.SO_BACKLOG, 128)
+                .childOption(ChannelOption.SO_KEEPALIVE, true);
+        channelFuture = b.bind(port).addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                BungeeJSONPlugin.getPlugin().getLogger().info("BungeeJSON server started on " + channelFuture.channel().localAddress());
+            }
+        });
     }
 }
