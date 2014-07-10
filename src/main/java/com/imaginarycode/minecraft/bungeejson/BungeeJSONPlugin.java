@@ -116,7 +116,12 @@ public class BungeeJSONPlugin extends Plugin {
                 break;
         }
         authenticationProvider.onEnable();
-        nb.initialize();
+        getProxy().getScheduler().runAsync(this, new Runnable() {
+            @Override
+            public void run() {
+                nb.initialize();
+            }
+        });
     }
 
     @Override
