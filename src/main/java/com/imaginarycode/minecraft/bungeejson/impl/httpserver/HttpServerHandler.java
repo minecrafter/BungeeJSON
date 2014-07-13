@@ -90,6 +90,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
         hreply.headers().set("Access-Control-Allow-Origin", "*");
         hreply.headers().set("Server", "BungeeJSON/0.1");
         hreply.headers().set("Content-Length", json.length());
+        hreply.headers().set("Connection", "keep-alive");
         return hreply;
     }
 
