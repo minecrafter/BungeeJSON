@@ -17,6 +17,7 @@
 package com.imaginarycode.minecraft.bungeejson.impl.httpserver;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
@@ -24,6 +25,8 @@ import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
@@ -35,7 +38,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
-    private HttpResponse resp;
     private HttpRequest request;
     private StringBuilder bodyBuilder = new StringBuilder();
 
@@ -48,11 +50,27 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
             if (o instanceof HttpContent) {
                 bodyBuilder.append(((HttpContent) o).content().toString(Charsets.UTF_8));
                 if (o instanceof LastHttpContent) {
-                    channelHandlerContext.channel().writeAndFlush(getResponse(channelHandlerContext, request));
-                    bodyBuilder.delete(0, bodyBuilder.length());
+                    HttpResponse response = getResponse(channelHandlerContext, request);
+                    final boolean dontKeepAlive = disobeyKeepAlive();
+                    if (dontKeepAlive) {
+                        response.headers().set("Connection", "close");
+                    }
+                    ChannelFuture future = channelHandlerContext.channel().writeAndFlush(getResponse(channelHandlerContext, request));
+                    future.addListener(new ChannelFutureListener() {
+                        @Override
+                        public void operationComplete(ChannelFuture future1) throws Exception {
+                            bodyBuilder.delete(0, bodyBuilder.length());
+                            if (dontKeepAlive)
+                                future1.channel().close();
+                        }
+                    });
                 }
             }
         }
+    }
+
+    private boolean disobeyKeepAlive() {
+        return request.headers().entries().size() == 1 && request.headers().contains("Host");
     }
 
     private HttpResponse getResponse(ChannelHandlerContext channelHandlerContext, HttpRequest hr) {
