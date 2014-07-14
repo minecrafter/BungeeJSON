@@ -18,11 +18,11 @@ package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeejson;
 
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 
 import java.util.Collections;
 
-public class IsAuthenticated implements RequestHandler {
+public class IsAuthenticated implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         return Collections.singletonMap("is_authenticated", BungeeJSONPlugin.getPlugin().getAuthenticationProvider()

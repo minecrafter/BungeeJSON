@@ -18,12 +18,12 @@ package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class Connect implements RequestHandler {
+public class Connect implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         // Verify if we have our 2 parameters:

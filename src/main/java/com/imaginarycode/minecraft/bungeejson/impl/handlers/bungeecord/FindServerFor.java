@@ -18,13 +18,12 @@ package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
-import net.md_5.bungee.api.ProxyServer;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Collections;
 
-public class FindServerFor implements RequestHandler {
+public class FindServerFor implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         if (request.getParams().containsKey("player")) {

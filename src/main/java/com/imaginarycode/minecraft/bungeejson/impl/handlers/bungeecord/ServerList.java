@@ -17,7 +17,7 @@
 package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import lombok.Data;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -26,7 +26,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerList implements RequestHandler {
+public class ServerList implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         List<Server> servers = new ArrayList<>();

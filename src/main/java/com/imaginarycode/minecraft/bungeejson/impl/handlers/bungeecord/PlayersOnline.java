@@ -17,15 +17,14 @@
 package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class PlayersOnline implements RequestHandler {
+public class PlayersOnline implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         List<String> players = new ArrayList<>();

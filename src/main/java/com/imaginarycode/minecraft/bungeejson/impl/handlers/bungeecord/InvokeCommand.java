@@ -3,7 +3,7 @@ package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 import com.google.common.collect.ImmutableMap;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -13,7 +13,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import java.net.InetAddress;
 import java.util.*;
 
-public class InvokeCommand implements RequestHandler {
+public class InvokeCommand implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         if (request.getParams().containsKey("command")) {

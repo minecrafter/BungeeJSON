@@ -18,10 +18,10 @@ package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 
 import com.google.common.collect.ImmutableMap;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import net.md_5.bungee.api.ProxyServer;
 
-public class PlayerCount implements RequestHandler {
+public class PlayerCount implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         return ImmutableMap.of("current_players", ProxyServer.getInstance().getOnlineCount(), "max_players",

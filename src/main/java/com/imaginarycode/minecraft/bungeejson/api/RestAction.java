@@ -19,7 +19,7 @@ package com.imaginarycode.minecraft.bungeejson.api;
 /**
  * This interface specifies a request handler.
  */
-public interface RequestHandler {
+public interface RestAction {
     /**
      * Handle the request.
      * @param request an {@link com.imaginarycode.minecraft.bungeejson.api.ApiRequest}

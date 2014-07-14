@@ -22,7 +22,7 @@ import com.google.common.collect.Multimap;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -61,7 +61,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
 
         Object reply;
         HttpResponseStatus hrs;
-        final RequestHandler handler = BungeeJSONPlugin.getRequestManager().getHandlerForEndpoint(query.path());
+        final RestAction handler = BungeeJSONPlugin.getRequestManager().getHandlerForEndpoint(query.path());
         if (handler == null) {
             reply = BungeeJSONUtilities.error("No such endpoint exists.");
             hrs = HttpResponseStatus.NOT_FOUND;

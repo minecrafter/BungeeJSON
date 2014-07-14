@@ -19,9 +19,9 @@ package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeejson;
 import com.google.common.collect.ImmutableMap;
 import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 
-public class Version implements RequestHandler {
+public class Version implements RestAction {
     @Override
     public Object handle(ApiRequest request) {
         return ImmutableMap.of("version", BungeeJSONPlugin.getPlugin().getDescription().getVersion(), "author", BungeeJSONPlugin.getPlugin().getDescription().getAuthor());

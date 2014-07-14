@@ -16,17 +16,17 @@
  */
 package com.imaginarycode.minecraft.bungeejson.impl;
 
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.bungeejson.api.RestAction;
 import com.imaginarycode.minecraft.bungeejson.api.RequestManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BungeeJSONRequestManager implements RequestManager {
-    private Map<String, RequestHandler> endpoints = new HashMap<>();
+    private Map<String, RestAction> endpoints = new HashMap<>();
 
     @Override
-    public void registerEndpoint(String endpoint, RequestHandler handler) {
+    public void registerEndpoint(String endpoint, RestAction handler) {
         String realEndpoint = endpoint;
         if (!realEndpoint.startsWith("/"))
             realEndpoint = "/" + endpoint;
@@ -34,7 +34,7 @@ public class BungeeJSONRequestManager implements RequestManager {
     }
 
     @Override
-    public RequestHandler getHandlerForEndpoint(String uri) {
+    public RestAction getHandlerForEndpoint(String uri) {
         return endpoints.get(uri);
     }
 }

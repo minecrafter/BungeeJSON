@@ -21,8 +21,8 @@ public interface RequestManager {
      * Register the specified endpoint with this request handler.
      *
      * @param endpoint the endpoint URL, relative to the BungeeJSON server root
-     * @param handler the endpoint {@link com.imaginarycode.minecraft.bungeejson.api.RequestHandler}
+     * @param handler the endpoint {@link RestAction}
      */
-    void registerEndpoint(String endpoint, RequestHandler handler);
-    RequestHandler getHandlerForEndpoint(String uri);
+    void registerEndpoint(String endpoint, RestAction handler);
+    RestAction getHandlerForEndpoint(String uri);
 }
