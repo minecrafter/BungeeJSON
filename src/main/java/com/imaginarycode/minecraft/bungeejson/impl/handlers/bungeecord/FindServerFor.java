@@ -20,6 +20,7 @@ import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Collections;
 
@@ -28,8 +29,9 @@ public class FindServerFor implements RequestHandler {
     public Object handle(ApiRequest request) {
         if (request.getParams().containsKey("player")) {
             String pPlayer = request.getParams().get("player").get(0);
-            if (ProxyServer.getInstance().getPlayer(pPlayer) != null) {
-                return Collections.singletonMap("server", ProxyServer.getInstance().getPlayer(pPlayer).getServer().getInfo().getName());
+            ProxiedPlayer pp = BungeeJSONUtilities.resolvePlayer(pPlayer);
+            if (pp != null) {
+                return Collections.singletonMap("server", pp.getServer().getInfo().getName());
             } else {
                 return BungeeJSONUtilities.error("Player is not online.");
             }

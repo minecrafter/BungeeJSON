@@ -30,8 +30,8 @@ public class Connect implements RequestHandler {
         if (request.getParams().containsKey("player") && request.getParams().containsKey("server")) {
             String pPlayer = request.getParams().get("player").get(0);
             String pServer = request.getParams().get("server").get(0);
-            if (ProxyServer.getInstance().getPlayer(pPlayer) != null) {
-                ProxiedPlayer pp = ProxyServer.getInstance().getPlayer(pPlayer);
+            ProxiedPlayer pp = BungeeJSONUtilities.resolvePlayer(pPlayer);
+            if (pp != null) {
                 if (ProxyServer.getInstance().getServerInfo(pServer) != null) {
                     ServerInfo si = ProxyServer.getInstance().getServerInfo(pServer);
                     if (pp.getServer().getInfo().equals(si)) {

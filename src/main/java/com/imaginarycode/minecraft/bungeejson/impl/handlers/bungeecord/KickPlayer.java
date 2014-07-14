@@ -20,6 +20,7 @@ import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class KickPlayer implements RequestHandler {
     @Override
@@ -31,8 +32,9 @@ public class KickPlayer implements RequestHandler {
                 reason = request.getParams().get("reason").get(0);
             else
                 reason = "You have been kicked externally.";
-            if (ProxyServer.getInstance().getPlayer(pPlayer) != null) {
-                ProxyServer.getInstance().getPlayer(pPlayer).disconnect(BungeeJSONUtilities.singletonChatComponent(reason));
+            ProxiedPlayer pp = BungeeJSONUtilities.resolvePlayer(pPlayer);
+            if (pp != null) {
+                pp.disconnect(BungeeJSONUtilities.singletonChatComponent(reason));
                 return BungeeJSONUtilities.ok();
             } else {
                 return BungeeJSONUtilities.error("Player is not online.");

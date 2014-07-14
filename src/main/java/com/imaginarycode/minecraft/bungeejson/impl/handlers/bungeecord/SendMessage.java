@@ -20,6 +20,7 @@ import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class SendMessage implements RequestHandler {
     @Override
@@ -27,8 +28,9 @@ public class SendMessage implements RequestHandler {
         if (request.getParams().containsKey("player") && request.getParams().containsKey("message")) {
             String pPlayer = request.getParams().get("player").get(0);
             String message = request.getParams().get("message").get(0);
-            if (ProxyServer.getInstance().getPlayer(pPlayer) != null) {
-                ProxyServer.getInstance().getPlayer(pPlayer).sendMessage(BungeeJSONUtilities.singletonChatComponent(message));
+            ProxiedPlayer pp = BungeeJSONUtilities.resolvePlayer(pPlayer);
+            if (pp != null) {
+                pp.sendMessage(BungeeJSONUtilities.singletonChatComponent(message));
                 return BungeeJSONUtilities.ok();
             } else {
                 return BungeeJSONUtilities.error("Player is not online.");

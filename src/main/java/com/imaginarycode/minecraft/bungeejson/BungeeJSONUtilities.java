@@ -16,12 +16,19 @@
  */
 package com.imaginarycode.minecraft.bungeejson;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class BungeeJSONUtilities {
+    private static final Pattern UUID_PATTERN = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
+    private static final Pattern MOJANGIAN_UUID_PATTERN = Pattern.compile("[a-fA-F0-9]{32}");
+
     private BungeeJSONUtilities() {}
 
     private static final Map<String, String> STATUS_OK = Collections.singletonMap("status", "OK");
@@ -38,5 +45,21 @@ public class BungeeJSONUtilities {
         TextComponent component = new TextComponent();
         component.setText(text);
         return component;
+    }
+
+    public static ProxiedPlayer resolvePlayer(String player) {
+        ProxiedPlayer player1 = ProxyServer.getInstance().getPlayer(player);
+
+        if (player1 != null)
+            return player1;
+
+        if (UUID_PATTERN.matcher(player).matches())
+            return ProxyServer.getInstance().getPlayer(UUID.fromString(player));
+
+        if (MOJANGIAN_UUID_PATTERN.matcher(player).matches()) {
+            return ProxyServer.getInstance().getPlayer(UUID.fromString(player.substring(0, 8) + "-" + player.substring(8, 12) + "-" + player.substring(12, 16) + "-" + player.substring(16, 20) + "-" + player.substring(20, 32)));
+        }
+
+        return null;
     }
 }
