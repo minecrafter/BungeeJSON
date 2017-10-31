@@ -25,6 +25,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ServerList implements RequestHandler {
     @Override
@@ -33,9 +34,12 @@ public class ServerList implements RequestHandler {
         for (ServerInfo si : ProxyServer.getInstance().getServers().values()) {
             Server server = new Server();
             server.setName(si.getName());
-            List<String> players = new ArrayList<>();
-            for (ProxiedPlayer player : si.getPlayers()) {
-                players.add(player.getName());
+            List<Player> players = new ArrayList<>();
+            for (ProxiedPlayer pp : si.getPlayers()) {
+                Player player = new Player();
+                player.setName(pp.getName());
+                player.setUuid(pp.getUniqueId());
+                players.add(player);
             }
             server.setPlayers(players);
             servers.add(server);
@@ -51,6 +55,12 @@ public class ServerList implements RequestHandler {
     @Data
     private class Server {
         private String name;
-        private List<String> players;
+        private List<Player> players;
+    }
+
+    @Data
+    private class Player {
+        private String name;
+        private UUID uuid;
     }
 }
